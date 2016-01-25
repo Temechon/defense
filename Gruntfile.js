@@ -141,12 +141,6 @@ module.exports = function (grunt) {
             local: {
                 path: 'http://localhost:3000/dist'
             }
-        },
-
-        // Create crosswalk application
-        exec: {
-            cmd:'python build/crosswalk_tools/make_apk.py --package=com.pixelcodr.letigo --manifest=dist/manifest.json --arch=arm --target-dir=build',
-            deploy:'adb install -r build/Letigo_arm.apk'
         }
     });
 
@@ -186,11 +180,6 @@ module.exports = function (grunt) {
         'uglify',       // compile js files in index.js
         'clean:dist'    // remove js file
     ]);
-    grunt.registerTask('build', 'build crosswalk prototype', [
-        'dist',
-        'exec'
-    ]);
-
 };
 
 

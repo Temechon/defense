@@ -16,6 +16,10 @@ class Game {
         // The state scene
         this.scene          = null;
 
+        this.towers = [];
+
+        this.enemies = [];
+
         // Resize window event
         window.addEventListener("resize", () => {
             this.engine.resize();
@@ -30,11 +34,11 @@ class Game {
 
         // Hemispheric light to light the scene
         let h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0,1,0), scene);
-        h.intensity = 0.4;
+        //h.intensity = 0.4;
 
-        let camera = new BABYLON.ArcRotateCamera("camera",Math.PI/2, 0, 30, BABYLON.Vector3.Zero(), scene);
-
-        let ground = BABYLON.Mesh.CreateBox('box', 1, scene);
+        let camera = new BABYLON.FreeCamera("camera",new BABYLON.Vector3(0,50,-10), scene);
+        camera.setTarget(BABYLON.Vector3.Zero());
+        camera.attachControl(scene.getEngine().getRenderingCanvas());
 
         return scene;
     }
@@ -75,7 +79,64 @@ class Game {
 
     _initGame() {
 
+        let ground = BABYLON.Mesh.CreateGround('ground', 100, 100, 1, this.scene);
+        ground.material = new BABYLON.StandardMaterial('', this.scene);
+        ground.material.diffuseTexture = new BABYLON.Texture('assets/ground.jpg', this.scene);
+        ground.material.diffuseTexture.uScale = 5;
+        ground.material.diffuseTexture.vScale = 5;
+        ground.material.specularColor = BABYLON.Color3.Black();
+        ground.receiveShadows = true;
+
+        let s = BABYLON.Mesh.CreateSphere('', 10, 1, this.scene);
+        s.position = new BABYLON.Vector3(20,0,20);
+
+        for (let i = 0 ; i<100; i++) {
+            this.enemies.push(new Enemy(this));
+        }
+
+        // add action on pointer
+        let eventPrefix = BABYLON.Tools.GetPointerPrefix();
+
+
+        this.scene.getEngine().getRenderingCanvas().addEventListener(eventPrefix + "down", () => {
+
+            let pickInfo = this.scene.pick(
+                this.scene.pointerX,
+                this.scene.pointerY,
+                (mesh) => { return mesh.name == 'ground'});
+            if (pickInfo.hit) {
+                let pos = pickInfo.pickedPoint;
+                let t = new Tower(this);
+                t.position = pos;
+                this.towers.push(t);
+            }
+        });
+
+        this.scene.debugLayer.show();
+
+        let inside = new BABYLON.StandardMaterial('', this.scene);
+        inside.diffuseColor = BABYLON.Color3.Green();
+
+        let outside = new BABYLON.StandardMaterial('', this.scene);
+        outside.diffuseColor = BABYLON.Color3.Red();
+
+        this.scene.registerBeforeRender(() => {
+            // For each towers
+            for (let t of this.towers) {
+                for (let e of this.enemies) {
+                    if (t.isInRadius(e)) {
+                        t.addToAttackList(e);
+                    } else {
+                        t.removeFromAttackList(e);
+                    }
+
+                }
+            }
+
+        });
+
     }
+
 
     /**
      * Returns an integer in [min, max[
