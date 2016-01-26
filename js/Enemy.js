@@ -3,7 +3,11 @@ class Enemy extends GameObject {
     constructor(game) {
         super(game);
 
-        this.addChildren(BABYLON.MeshBuilder.CreateBox('box', {width:1, height:1, depth:1}, this.getScene()));
+        let b = BABYLON.MeshBuilder.CreateBox('box', {width:1, height:1, depth:1}, this.getScene());
+        BABYLON.Tags.AddTagsTo(b, 'enemy');
+        this.addChildren(b);
+
+        this.position.y = 1;
 
         this.getScene().registerBeforeRender(() => {
 
@@ -27,11 +31,17 @@ class Enemy extends GameObject {
         this.timer.callback = () => {
             this.changeDirection();
         }
+
     }
 
     move() {
-        this.position.addInPlace(this.direction)
+        this.position.addInPlace(this.direction);
+    }
 
+    dispose() {
+        // remove this enemy from the tower attack list
+        this.game.removeEnemy(this);
+        super.dispose();
     }
 
     /**
@@ -49,6 +59,7 @@ class Enemy extends GameObject {
         this._mainDirection.addToRef(this._randomDirection, this.direction);
         this.direction.normalize().scaleInPlace(0.05);
 
+        this.direction.y = 0;
 
     }
 }

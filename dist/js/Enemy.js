@@ -18,7 +18,11 @@ var Enemy = (function (_GameObject) {
 
                 _get(Object.getPrototypeOf(Enemy.prototype), 'constructor', this).call(this, game);
 
-                this.addChildren(BABYLON.MeshBuilder.CreateBox('box', { width: 1, height: 1, depth: 1 }, this.getScene()));
+                var b = BABYLON.MeshBuilder.CreateBox('box', { width: 1, height: 1, depth: 1 }, this.getScene());
+                BABYLON.Tags.AddTagsTo(b, 'enemy');
+                this.addChildren(b);
+
+                this.position.y = 1;
 
                 this.getScene().registerBeforeRender(function () {
 
@@ -47,6 +51,13 @@ var Enemy = (function (_GameObject) {
                 value: function move() {
                         this.position.addInPlace(this.direction);
                 }
+        }, {
+                key: 'dispose',
+                value: function dispose() {
+                        // remove this enemy from the tower attack list
+                        this.game.removeEnemy(this);
+                        _get(Object.getPrototypeOf(Enemy.prototype), 'dispose', this).call(this);
+                }
 
                 /**
                  * Get a random direction, although the enemy is goind forward its destination
@@ -64,6 +75,8 @@ var Enemy = (function (_GameObject) {
 
                         this._mainDirection.addToRef(this._randomDirection, this.direction);
                         this.direction.normalize().scaleInPlace(0.05);
+
+                        this.direction.y = 0;
                 }
         }]);
 

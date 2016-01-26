@@ -132,9 +132,20 @@ class Game {
 
                 }
             }
-
         });
+    }
 
+    removeEnemy(enemy) {
+        // remove from tower
+        for (let t of this.towers) {
+            t.removeFromAttackList(enemy);
+        }
+
+        // remove from enemy list
+        let index = this.enemies.indexOf(enemy);
+        if (index > -1) {
+            this.enemies.splice(index, 1);
+        }
     }
 
 

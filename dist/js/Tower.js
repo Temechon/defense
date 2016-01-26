@@ -31,9 +31,13 @@ var Tower = (function (_GameObject) {
 
         this._attackList = [];
 
-        this.getScene().registerBeforeRender(function () {
+        // This tower will shoot every xx ms
+        this.shootCadency = 250;
+
+        this.timer = new Timer(this.shootCadency, this.getScene(), { repeat: -1, autostart: true });
+        this.timer.callback = function () {
             _this.attack();
-        });
+        };
     }
 
     _createClass(Tower, [{
@@ -44,7 +48,10 @@ var Tower = (function (_GameObject) {
     }, {
         key: 'addToAttackList',
         value: function addToAttackList(enemy) {
-            this._attackList.push(enemy);
+            var index = this._attackList.indexOf(enemy);
+            if (index == -1) {
+                this._attackList.push(enemy);
+            }
         }
     }, {
         key: 'removeFromAttackList',
@@ -56,7 +63,14 @@ var Tower = (function (_GameObject) {
         }
     }, {
         key: 'attack',
-        value: function attack() {}
+        value: function attack() {
+            if (this._attackList.length > 0) {
+                var enemyPos = this._attackList[0].position;
+                var pos = this.position.clone();
+                pos.y = 1;
+                new Bullet(this.game, pos, enemyPos, this.radius, 10);
+            }
+        }
     }]);
 
     return Tower;
