@@ -20,6 +20,13 @@ class Game {
 
         this.enemies = [];
 
+        this.enemiesToSend = 10;
+        this.enemiesHealth = 10;
+
+        this.level = 0;
+
+        this.gold = 100;
+
         // Resize window event
         window.addEventListener("resize", () => {
             this.engine.resize();
@@ -90,10 +97,6 @@ class Game {
         let s = BABYLON.Mesh.CreateSphere('', 10, 1, this.scene);
         s.position = new BABYLON.Vector3(20,0,20);
 
-        for (let i = 0 ; i<100; i++) {
-            this.enemies.push(new Enemy(this));
-        }
-
         // add action on pointer
         let eventPrefix = BABYLON.Tools.GetPointerPrefix();
 
@@ -104,7 +107,13 @@ class Game {
                 this.scene.pointerX,
                 this.scene.pointerY,
                 (mesh) => { return mesh.name == 'ground'});
+
+
             if (pickInfo.hit) {
+                // If the picked mesh is a tower
+                // todo here, change its material
+
+                // if the picked mesh is the ground
                 let pos = pickInfo.pickedPoint;
                 let t = new Tower(this);
                 t.position = pos;
@@ -114,12 +123,9 @@ class Game {
 
         this.scene.debugLayer.show();
 
-        let inside = new BABYLON.StandardMaterial('', this.scene);
-        inside.diffuseColor = BABYLON.Color3.Green();
+        this.sendWave();
 
-        let outside = new BABYLON.StandardMaterial('', this.scene);
-        outside.diffuseColor = BABYLON.Color3.Red();
-
+        // Sort each enemy to the nearest tower
         this.scene.registerBeforeRender(() => {
             // For each towers
             for (let t of this.towers) {
@@ -146,6 +152,28 @@ class Game {
         if (index > -1) {
             this.enemies.splice(index, 1);
         }
+        if (this.enemies.length == 0) {
+            this.sendWave();
+        }
+    }
+
+    /**
+     * Send a new wave
+     */
+    sendWave() {
+        this.level++;
+        console.log('incoming level ', this.level);
+        // increase minions health
+        this.enemiesHealth += 20;
+
+        // Increase enemies number
+        this.enemiesToSend += 10;
+
+        // send X enemies
+        for (let i = 0 ; i<this.enemiesToSend; i++) {
+            this.enemies.push(new Enemy(this, this.enemiesHealth));
+        }
+
     }
 
 

@@ -28,6 +28,13 @@ var Game = (function () {
 
         this.enemies = [];
 
+        this.enemiesToSend = 10;
+        this.enemiesHealth = 10;
+
+        this.level = 0;
+
+        this.gold = 100;
+
         // Resize window event
         window.addEventListener("resize", function () {
             _this.engine.resize();
@@ -102,10 +109,6 @@ var Game = (function () {
             var s = BABYLON.Mesh.CreateSphere('', 10, 1, this.scene);
             s.position = new BABYLON.Vector3(20, 0, 20);
 
-            for (var i = 0; i < 100; i++) {
-                this.enemies.push(new Enemy(this));
-            }
-
             // add action on pointer
             var eventPrefix = BABYLON.Tools.GetPointerPrefix();
 
@@ -114,7 +117,12 @@ var Game = (function () {
                 var pickInfo = _this3.scene.pick(_this3.scene.pointerX, _this3.scene.pointerY, function (mesh) {
                     return mesh.name == 'ground';
                 });
+
                 if (pickInfo.hit) {
+                    // If the picked mesh is a tower
+                    // todo here, change its material
+
+                    // if the picked mesh is the ground
                     var pos = pickInfo.pickedPoint;
                     var t = new Tower(_this3);
                     t.position = pos;
@@ -124,12 +132,9 @@ var Game = (function () {
 
             this.scene.debugLayer.show();
 
-            var inside = new BABYLON.StandardMaterial('', this.scene);
-            inside.diffuseColor = BABYLON.Color3.Green();
+            this.sendWave();
 
-            var outside = new BABYLON.StandardMaterial('', this.scene);
-            outside.diffuseColor = BABYLON.Color3.Red();
-
+            // Sort each enemy to the nearest tower
             this.scene.registerBeforeRender(function () {
                 // For each towers
                 var _iteratorNormalCompletion = true;
@@ -218,6 +223,29 @@ var Game = (function () {
             var index = this.enemies.indexOf(enemy);
             if (index > -1) {
                 this.enemies.splice(index, 1);
+            }
+            if (this.enemies.length == 0) {
+                this.sendWave();
+            }
+        }
+
+        /**
+         * Send a new wave
+         */
+    }, {
+        key: "sendWave",
+        value: function sendWave() {
+            this.level++;
+            console.log('incoming level ', this.level);
+            // increase minions health
+            this.enemiesHealth += 20;
+
+            // Increase enemies number
+            this.enemiesToSend += 10;
+
+            // send X enemies
+            for (var i = 0; i < this.enemiesToSend; i++) {
+                this.enemies.push(new Enemy(this, this.enemiesHealth));
             }
         }
 

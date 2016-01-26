@@ -1,6 +1,6 @@
 class Enemy extends GameObject {
 
-    constructor(game) {
+    constructor(game, health) {
         super(game);
 
         let b = BABYLON.MeshBuilder.CreateBox('box', {width:1, height:1, depth:1}, this.getScene());
@@ -25,17 +25,27 @@ class Enemy extends GameObject {
 
         this.destination = new BABYLON.Vector3(20,0,20);
 
-        this.health = 1;
+        this.health = health;
 
         this.timer = new Timer(Game.randomInt(250,500), this.getScene(), {autostart:true, repeat:-1});
         this.timer.callback = () => {
             this.changeDirection();
         }
-
     }
 
     move() {
         this.position.addInPlace(this.direction);
+    }
+
+    /**
+     * Removes value from
+     * @param value
+     */
+    damage(value) {
+        this.health -= value;
+        if (this.health <=0 ) {
+            this.dispose();
+        }
     }
 
     dispose() {

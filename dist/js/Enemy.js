@@ -11,7 +11,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 var Enemy = (function (_GameObject) {
         _inherits(Enemy, _GameObject);
 
-        function Enemy(game) {
+        function Enemy(game, health) {
                 var _this = this;
 
                 _classCallCheck(this, Enemy);
@@ -38,7 +38,7 @@ var Enemy = (function (_GameObject) {
 
                 this.destination = new BABYLON.Vector3(20, 0, 20);
 
-                this.health = 1;
+                this.health = health;
 
                 this.timer = new Timer(Game.randomInt(250, 500), this.getScene(), { autostart: true, repeat: -1 });
                 this.timer.callback = function () {
@@ -50,6 +50,19 @@ var Enemy = (function (_GameObject) {
                 key: 'move',
                 value: function move() {
                         this.position.addInPlace(this.direction);
+                }
+
+                /**
+                 * Removes value from
+                 * @param value
+                 */
+        }, {
+                key: 'damage',
+                value: function damage(value) {
+                        this.health -= value;
+                        if (this.health <= 0) {
+                                this.dispose();
+                        }
                 }
         }, {
                 key: 'dispose',

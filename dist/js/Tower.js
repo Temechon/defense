@@ -45,6 +45,11 @@ var Tower = (function (_GameObject) {
         value: function isInRadius(enemy) {
             return BABYLON.Vector3.DistanceSquared(enemy.position, this.position) < this.radius * this.radius;
         }
+
+        /**
+         * Add to attack list if not already present
+         * @param enemy
+         */
     }, {
         key: 'addToAttackList',
         value: function addToAttackList(enemy) {

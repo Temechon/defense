@@ -42,9 +42,11 @@ class Bullet extends GameObject {
         let length = vec.length();
         vec.normalize();
 
+        // If pick, damage this enemy
         let res = this.getScene().pickWithRay(new BABYLON.Ray(this._lastPosition, vec, length), this.predicate, false);
         if (res.hit) {
-            res.pickedMesh.parent.dispose();
+            let go = res.pickedMesh.parent;
+            go.damage(this.damage);
             this.dispose();
         }
 
