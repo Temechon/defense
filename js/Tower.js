@@ -24,6 +24,8 @@ class Tower extends GameObject {
             this.attack();
         };
 
+        this.modifier = new IceEffect(this.getScene());
+
     }
 
     isInRadius(enemy) {
@@ -53,7 +55,7 @@ class Tower extends GameObject {
             let enemyPos = this._attackList[0].position;
             let pos = this.position.clone();
             pos.y = 1;
-            new Bullet(this.game, pos, enemyPos, this.radius, 10);
+            new Bullet(this.game, pos, enemyPos, this.radius, 10, this.modifier);
         }
     }
 

@@ -1,9 +1,19 @@
 class Bullet extends GameObject {
 
-    constructor(game, position, destination, distancemax, damage) {
+    /**
+     *
+     * @param game
+     * @param position The bullet initial position
+     * @param destination The bullet destination (enemy position)
+     * @param distancemax The max distance this bullet can travel
+     * @param damage The bullet damage
+     * @param modifier The tower effect added to this bullet
+     */
+    constructor(game, position, destination, distancemax, damage, effect) {
         super(game);
 
         this.addChildren(BABYLON.Mesh.CreateBox('bullet', 0.2, this.getScene()));
+
 
         this.position       = position;
         this._lastPosition  = position.clone();
@@ -25,6 +35,8 @@ class Bullet extends GameObject {
 
 
         this.damage = damage;
+        this.effect = effect;
+        this.effect.affectBullet(this);
 
         this._move = this.move.bind(this);
 
@@ -46,10 +58,10 @@ class Bullet extends GameObject {
         let res = this.getScene().pickWithRay(new BABYLON.Ray(this._lastPosition, vec, length), this.predicate, false);
         if (res.hit) {
             let go = res.pickedMesh.parent;
-            go.damage(this.damage);
+            // apply modifier on enemy and damage
+            go.damage(this.effect.affectEnemy(this.damage, go));
             this.dispose();
         }
-
 
         this._lastPosition.copyFrom(this.position);
     }

@@ -38,6 +38,8 @@ var Tower = (function (_GameObject) {
         this.timer.callback = function () {
             _this.attack();
         };
+
+        this.modifier = new IceEffect(this.getScene());
     }
 
     _createClass(Tower, [{
@@ -73,7 +75,7 @@ var Tower = (function (_GameObject) {
                 var enemyPos = this._attackList[0].position;
                 var pos = this.position.clone();
                 pos.y = 1;
-                new Bullet(this.game, pos, enemyPos, this.radius, 10);
+                new Bullet(this.game, pos, enemyPos, this.radius, 10, this.modifier);
             }
         }
     }]);

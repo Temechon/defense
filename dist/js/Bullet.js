@@ -11,7 +11,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 var Bullet = (function (_GameObject) {
         _inherits(Bullet, _GameObject);
 
-        function Bullet(game, position, destination, distancemax, damage) {
+        /**
+         *
+         * @param game
+         * @param position The bullet initial position
+         * @param destination The bullet destination (enemy position)
+         * @param distancemax The max distance this bullet can travel
+         * @param damage The bullet damage
+         * @param modifier The tower effect added to this bullet
+         */
+
+        function Bullet(game, position, destination, distancemax, damage, effect) {
                 _classCallCheck(this, Bullet);
 
                 _get(Object.getPrototypeOf(Bullet.prototype), 'constructor', this).call(this, game);
@@ -36,6 +46,8 @@ var Bullet = (function (_GameObject) {
                 };
 
                 this.damage = damage;
+                this.effect = effect;
+                this.effect.affectBullet(this);
 
                 this._move = this.move.bind(this);
 
@@ -59,7 +71,8 @@ var Bullet = (function (_GameObject) {
                         var res = this.getScene().pickWithRay(new BABYLON.Ray(this._lastPosition, vec, length), this.predicate, false);
                         if (res.hit) {
                                 var go = res.pickedMesh.parent;
-                                go.damage(this.damage);
+                                // apply modifier on enemy and damage
+                                go.damage(this.effect.affectEnemy(this.damage, go));
                                 this.dispose();
                         }
 

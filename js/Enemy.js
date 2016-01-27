@@ -27,6 +27,8 @@ class Enemy extends GameObject {
 
         this.health = health;
 
+        this.speed = 3;
+
         this.timer = new Timer(Game.randomInt(250,500), this.getScene(), {autostart:true, repeat:-1});
         this.timer.callback = () => {
             this.changeDirection();
@@ -67,7 +69,7 @@ class Enemy extends GameObject {
         this._randomDirection.normalize().scaleInPlace(3);
 
         this._mainDirection.addToRef(this._randomDirection, this.direction);
-        this.direction.normalize().scaleInPlace(0.05);
+        this.direction.normalize().scaleInPlace(0.05*this.speed);
 
         this.direction.y = 0;
 

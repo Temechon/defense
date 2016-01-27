@@ -43,7 +43,7 @@ module.exports = function (grunt) {
         // Watches content related changes
         watch : {
             js : {
-                files: ['js/**/*.js'],
+                files: ['js/**/**/*.js'],
                 tasks: ['newer:babel:dev']
             },
             sass : {
