@@ -9,83 +9,89 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Bullet = (function (_GameObject) {
-        _inherits(Bullet, _GameObject);
+    _inherits(Bullet, _GameObject);
 
-        /**
-         *
-         * @param game
-         * @param position The bullet initial position
-         * @param destination The bullet destination (enemy position)
-         * @param distancemax The max distance this bullet can travel
-         * @param damage The bullet damage
-         * @param modifier The tower effect added to this bullet
-         */
+    /**
+     *
+     * @param game
+     * @param position The bullet initial position
+     * @param destination The bullet destination (enemy position)
+     * @param distancemax The max distance this bullet can travel
+     * @param damage The bullet damage
+     * @param modifier The tower effect added to this bullet
+     */
 
-        function Bullet(game, position, destination, distancemax, damage, effect) {
-                _classCallCheck(this, Bullet);
+    function Bullet(game, position, destination, distancemax, damage, effect) {
+        _classCallCheck(this, Bullet);
 
-                _get(Object.getPrototypeOf(Bullet.prototype), 'constructor', this).call(this, game);
+        _get(Object.getPrototypeOf(Bullet.prototype), 'constructor', this).call(this, game);
 
-                this.addChildren(BABYLON.Mesh.CreateBox('bullet', 0.2, this.getScene()));
+        this.addChildren(BABYLON.Mesh.CreateBox('bullet', 0.2, this.getScene()));
 
-                this.position = position;
-                this._lastPosition = position.clone();
-                this._startingPosition = position.clone();
-                this.destination = destination;
+        this.position = position.clone();
+        this._lastPosition = position.clone();
+        this._startingPosition = position.clone();
+        this.destination = destination;
 
-                // direction
-                this._direction = destination.subtract(this.position);
-                this._direction.y = 0;
-                this._direction.normalize().scaleInPlace(0.20);
+        // direction
+        this._direction = destination.subtract(this.position);
+        this._direction.y = 0;
+        this._direction.normalize().scaleInPlace(0.20);
 
-                this.distanceMax = distancemax * distancemax;
+        this.distanceMax = distancemax * distancemax;
 
-                // The predicate to collide only against enemies
-                this.predicate = function (m) {
-                        return BABYLON.Tags.MatchesQuery(m, 'enemy');
-                };
+        // The predicate to collide only against enemies
+        this.predicate = function (m) {
+            return BABYLON.Tags.MatchesQuery(m, 'enemy');
+        };
 
-                this.damage = damage;
-                this.effect = effect;
-                this.effect.affectBullet(this);
+        this.damage = damage;
+        this.effect = effect;
+        this.effect.affectBullet(this);
 
-                this._move = this.move.bind(this);
+        this._move = this.move.bind(this);
 
-                this.getScene().registerBeforeRender(this._move);
+        this.setEnabled(false);
+    }
+
+    _createClass(Bullet, [{
+        key: 'fire',
+        value: function fire() {
+            this.setEnabled(true);
+            this.getScene().registerBeforeRender(this._move);
         }
+    }, {
+        key: 'move',
+        value: function move() {
+            // Increase position
+            this.position.addInPlace(this._direction);
+            if (BABYLON.Vector3.DistanceSquared(this._startingPosition, this.position) > this.distanceMax) {
+                this.dispose();
+            }
+            // Throw ray between last position and position to check if there is an intersection
+            var vec = this.position.subtract(this._lastPosition);
+            var length = vec.length();
+            vec.normalize();
 
-        _createClass(Bullet, [{
-                key: 'move',
-                value: function move() {
-                        // Increase position
-                        this.position.addInPlace(this._direction);
-                        if (BABYLON.Vector3.DistanceSquared(this._startingPosition, this.position) > this.distanceMax) {
-                                this.dispose();
-                        }
-                        // Throw ray between last position and position to check if there is an intersection
-                        var vec = this.position.subtract(this._lastPosition);
-                        var length = vec.length();
-                        vec.normalize();
+            // If pick, damage this enemy
+            var res = this.getScene().pickWithRay(new BABYLON.Ray(this._lastPosition, vec, length), this.predicate, false);
+            if (res.hit) {
+                var go = res.pickedMesh.parent;
+                // apply modifier on enemy and damage
+                go.damage(this.effect.affectEnemy(this.damage, go));
+                this.dispose();
+            }
 
-                        // If pick, damage this enemy
-                        var res = this.getScene().pickWithRay(new BABYLON.Ray(this._lastPosition, vec, length), this.predicate, false);
-                        if (res.hit) {
-                                var go = res.pickedMesh.parent;
-                                // apply modifier on enemy and damage
-                                go.damage(this.effect.affectEnemy(this.damage, go));
-                                this.dispose();
-                        }
+            this._lastPosition.copyFrom(this.position);
+        }
+    }, {
+        key: 'dispose',
+        value: function dispose() {
+            this.getScene().unregisterBeforeRender(this._move);
+            _get(Object.getPrototypeOf(Bullet.prototype), 'dispose', this).call(this);
+        }
+    }]);
 
-                        this._lastPosition.copyFrom(this.position);
-                }
-        }, {
-                key: 'dispose',
-                value: function dispose() {
-                        this.getScene().unregisterBeforeRender(this._move);
-                        _get(Object.getPrototypeOf(Bullet.prototype), 'dispose', this).call(this);
-                }
-        }]);
-
-        return Bullet;
+    return Bullet;
 })(GameObject);
 //# sourceMappingURL=Bullet.js.map

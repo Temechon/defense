@@ -15,7 +15,7 @@ class Bullet extends GameObject {
         this.addChildren(BABYLON.Mesh.CreateBox('bullet', 0.2, this.getScene()));
 
 
-        this.position       = position;
+        this.position       = position.clone();
         this._lastPosition  = position.clone();
         this._startingPosition = position.clone();
         this.destination    = destination;
@@ -40,6 +40,12 @@ class Bullet extends GameObject {
 
         this._move = this.move.bind(this);
 
+        this.setEnabled(false);
+
+    }
+
+    fire() {
+        this.setEnabled(true);
         this.getScene().registerBeforeRender(this._move);
     }
 

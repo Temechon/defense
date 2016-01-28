@@ -39,7 +39,10 @@ var Tower = (function (_GameObject) {
             _this.attack();
         };
 
-        this.modifier = new ThunderEffect(this.getScene());
+        //this.modifier = new ThunderEffect(this.getScene());
+        this.modifier = new StandardEffect(this.getScene());
+
+        this.generator = new DoubleShoot(this.game, this.shootCadency);
     }
 
     _createClass(Tower, [{
@@ -75,7 +78,7 @@ var Tower = (function (_GameObject) {
                 var enemyPos = this._attackList[0].position;
                 var pos = this.position.clone();
                 pos.y = 1;
-                new Bullet(this.game, pos, enemyPos, this.radius, 10, this.modifier);
+                this.generator.generate(pos, enemyPos, this.radius, 10, this.modifier);
             }
         }
     }]);

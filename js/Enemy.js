@@ -54,6 +54,7 @@ class Enemy extends GameObject {
     }
 
     dispose() {
+        this.timer.stop(true);
         // remove this enemy from the tower attack list
         this.game.removeEnemy(this);
         super.dispose();

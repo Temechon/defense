@@ -103,10 +103,10 @@ var Timer = (function () {
          */
     }, {
         key: "stop",
-        value: function stop() {
+        value: function stop(destroy) {
             this.started = false;
             this.reset();
-            if (this.autodestroy) {
+            if (this.autodestroy || destroy) {
                 this._destroy();
             }
         }

@@ -72,6 +72,7 @@ var Enemy = (function (_GameObject) {
         }, {
                 key: 'dispose',
                 value: function dispose() {
+                        this.timer.stop(true);
                         // remove this enemy from the tower attack list
                         this.game.removeEnemy(this);
                         _get(Object.getPrototypeOf(Enemy.prototype), 'dispose', this).call(this);
