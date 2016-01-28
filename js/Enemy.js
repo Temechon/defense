@@ -27,7 +27,10 @@ class Enemy extends GameObject {
 
         this.health = health;
 
-        this.speed = 3;
+        this.speed = 1;
+
+        // This parameter will be updated by modifiers in order to update the enemy speed.
+        this.speedMultiplier = 1;
 
         this.timer = new Timer(Game.randomInt(250,500), this.getScene(), {autostart:true, repeat:-1});
         this.timer.callback = () => {
@@ -69,7 +72,7 @@ class Enemy extends GameObject {
         this._randomDirection.normalize().scaleInPlace(3);
 
         this._mainDirection.addToRef(this._randomDirection, this.direction);
-        this.direction.normalize().scaleInPlace(0.05*this.speed);
+        this.direction.normalize().scaleInPlace(0.05*this.speed*this.speedMultiplier);
 
         this.direction.y = 0;
 

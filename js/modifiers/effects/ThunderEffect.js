@@ -1,24 +1,25 @@
 /**
- * Ice effect slow the enemy, but damage are divided by 2
+ * Thunder effect stun the enemy, but does divide the original damage by 4.
+ * A bullet doesn't have any effect on an enemy already stunned.
  */
-class IceEffect extends Effect {
+class ThunderEffect extends Effect {
 
     constructor(scene) {
         super(scene);
 
         // fire material
-        let mat = scene.getMaterialByName('_glassEffectMaterial_');
+        let mat = scene.getMaterialByName('_thunderEffectMaterial_');
         if (!mat) {
-            mat = new BABYLON.StandardMaterial('_glassEffectMaterial_', scene);
-            mat.emissiveColor = BABYLON.Color3.Blue();
+            mat = new BABYLON.StandardMaterial('_thunderEffectMaterial_', scene);
+            mat.emissiveColor = BABYLON.Color3.Yellow();
             mat.specularColor = BABYLON.Color3.Black();
         }
-        this.glassMaterial = mat;
+        this.thunderMaterial = mat;
 
         // The slow effect
-        this.mult = 0.5;
+        this.mult = 0.0;
         // The slow time in ms
-        this.slowTime = 1000;
+        this.slowTime = 500;
 
         this.scene = scene;
     }
@@ -28,7 +29,7 @@ class IceEffect extends Effect {
      */
     affectBullet(bullet) {
         // update bullet color
-        bullet.material = this.glassMaterial;
+        bullet.material = this.thunderMaterial;
     }
 
     /**
@@ -41,10 +42,10 @@ class IceEffect extends Effect {
             enemy.speedMultiplier = 1;
         };
 
-        return damage/2;
+        return damage /4;
     }
 
     upgrade() {
-        this.mult = this.mult/2;
+        this.slowTime = 1000;
     }
 }

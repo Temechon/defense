@@ -17,14 +17,14 @@ class Tower extends GameObject {
         this._attackList = [];
 
         // This tower will shoot every xx ms
-        this.shootCadency = 250;
+        this.shootCadency = 500;
 
         this.timer = new Timer(this.shootCadency, this.getScene(), {repeat:-1, autostart:true});
         this.timer.callback = () => {
             this.attack();
         };
 
-        this.modifier = new IceEffect(this.getScene());
+        this.modifier = new ThunderEffect(this.getScene());
 
     }
 

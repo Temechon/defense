@@ -32,14 +32,14 @@ var Tower = (function (_GameObject) {
         this._attackList = [];
 
         // This tower will shoot every xx ms
-        this.shootCadency = 250;
+        this.shootCadency = 500;
 
         this.timer = new Timer(this.shootCadency, this.getScene(), { repeat: -1, autostart: true });
         this.timer.callback = function () {
             _this.attack();
         };
 
-        this.modifier = new IceEffect(this.getScene());
+        this.modifier = new ThunderEffect(this.getScene());
     }
 
     _createClass(Tower, [{

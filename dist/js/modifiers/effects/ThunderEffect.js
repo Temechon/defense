@@ -1,5 +1,6 @@
 /**
- * Ice effect slow the enemy, but damage are divided by 2
+ * Thunder effect stun the enemy, but does divide the original damage by 4.
+ * A bullet doesn't have any effect on an enemy already stunned.
  */
 'use strict';
 
@@ -11,27 +12,27 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var IceEffect = (function (_Effect) {
-    _inherits(IceEffect, _Effect);
+var ThunderEffect = (function (_Effect) {
+    _inherits(ThunderEffect, _Effect);
 
-    function IceEffect(scene) {
-        _classCallCheck(this, IceEffect);
+    function ThunderEffect(scene) {
+        _classCallCheck(this, ThunderEffect);
 
-        _get(Object.getPrototypeOf(IceEffect.prototype), 'constructor', this).call(this, scene);
+        _get(Object.getPrototypeOf(ThunderEffect.prototype), 'constructor', this).call(this, scene);
 
         // fire material
-        var mat = scene.getMaterialByName('_glassEffectMaterial_');
+        var mat = scene.getMaterialByName('_thunderEffectMaterial_');
         if (!mat) {
-            mat = new BABYLON.StandardMaterial('_glassEffectMaterial_', scene);
-            mat.emissiveColor = BABYLON.Color3.Blue();
+            mat = new BABYLON.StandardMaterial('_thunderEffectMaterial_', scene);
+            mat.emissiveColor = BABYLON.Color3.Yellow();
             mat.specularColor = BABYLON.Color3.Black();
         }
-        this.glassMaterial = mat;
+        this.thunderMaterial = mat;
 
         // The slow effect
-        this.mult = 0.5;
+        this.mult = 0.0;
         // The slow time in ms
-        this.slowTime = 1000;
+        this.slowTime = 500;
 
         this.scene = scene;
     }
@@ -40,11 +41,11 @@ var IceEffect = (function (_Effect) {
      * Method updating the bullet : color change, shape change...
      */
 
-    _createClass(IceEffect, [{
+    _createClass(ThunderEffect, [{
         key: 'affectBullet',
         value: function affectBullet(bullet) {
             // update bullet color
-            bullet.material = this.glassMaterial;
+            bullet.material = this.thunderMaterial;
         }
 
         /**
@@ -59,15 +60,15 @@ var IceEffect = (function (_Effect) {
                 enemy.speedMultiplier = 1;
             };
 
-            return damage / 2;
+            return damage / 4;
         }
     }, {
         key: 'upgrade',
         value: function upgrade() {
-            this.mult = this.mult / 2;
+            this.slowTime = 1000;
         }
     }]);
 
-    return IceEffect;
+    return ThunderEffect;
 })(Effect);
-//# sourceMappingURL=IceEffect.js.map
+//# sourceMappingURL=ThunderEffect.js.map
