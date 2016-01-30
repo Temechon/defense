@@ -20,3 +20,51 @@ html, body {
 #game-canvas {
   width: 100%;
   height: 100%; }
+
+.gui {
+  position: absolute;
+  width: 100%;
+  height: 150px;
+  bottom: 0;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row;
+      -ms-flex-flow: row;
+          flex-flow: row; }
+  .gui .info {
+    width: 30%;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-flow: column;
+        -ms-flex-flow: column;
+            flex-flow: column; }
+    .gui .info > * {
+      width: 90%;
+      margin: auto;
+      background-color: #0d3349;
+      color: white; }
+    .gui .info .fadeout {
+      -webkit-animation: 0.5s next-level linear;
+              animation: 0.5s next-level linear; }
+
+@-webkit-keyframes next-level {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 1; }
+  100% {
+    -webkit-transform: scale(1.5);
+            transform: scale(1.5);
+    opacity: 0; } }
+
+@keyframes next-level {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 1; }
+  100% {
+    -webkit-transform: scale(1.5);
+            transform: scale(1.5);
+    opacity: 0; } }

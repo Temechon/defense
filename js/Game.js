@@ -94,13 +94,14 @@ class Game {
         ground.material.specularColor = BABYLON.Color3.Black();
         ground.receiveShadows = true;
 
+        // destination
         let s = BABYLON.Mesh.CreateSphere('', 10, 1, this.scene);
         s.position = new BABYLON.Vector3(20,0,20);
 
+        this.guiManager = new GUIManager(this);
+
         // add action on pointer
         let eventPrefix = BABYLON.Tools.GetPointerPrefix();
-
-
         this.scene.getEngine().getRenderingCanvas().addEventListener(eventPrefix + "down", () => {
 
             let pickInfo = this.scene.pick(
@@ -162,16 +163,20 @@ class Game {
      */
     sendWave() {
         this.level++;
-        console.log('incoming level ', this.level);
+
+        // Update GUI
+        this.guiManager.nextLevel();
+
         // increase minions health
         this.enemiesHealth += 20;
 
         // Increase enemies number
-        this.enemiesToSend += 10;
+        //this.enemiesToSend += 10;
 
         // send X enemies
         for (let i = 0 ; i<this.enemiesToSend; i++) {
-            this.enemies.push(new Enemy(this, this.enemiesHealth));
+            let e = new Enemy(this, this.enemiesHealth);
+            this.enemies.push(e);
         }
 
     }

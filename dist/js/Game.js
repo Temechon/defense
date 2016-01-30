@@ -106,12 +106,14 @@ var Game = (function () {
             ground.material.specularColor = BABYLON.Color3.Black();
             ground.receiveShadows = true;
 
+            // destination
             var s = BABYLON.Mesh.CreateSphere('', 10, 1, this.scene);
             s.position = new BABYLON.Vector3(20, 0, 20);
 
+            this.guiManager = new GUIManager(this);
+
             // add action on pointer
             var eventPrefix = BABYLON.Tools.GetPointerPrefix();
-
             this.scene.getEngine().getRenderingCanvas().addEventListener(eventPrefix + "down", function () {
 
                 var pickInfo = _this3.scene.pick(_this3.scene.pointerX, _this3.scene.pointerY, function (mesh) {
@@ -236,16 +238,20 @@ var Game = (function () {
         key: "sendWave",
         value: function sendWave() {
             this.level++;
-            console.log('incoming level ', this.level);
+
+            // Update GUI
+            this.guiManager.nextLevel();
+
             // increase minions health
             this.enemiesHealth += 20;
 
             // Increase enemies number
-            this.enemiesToSend += 10;
+            //this.enemiesToSend += 10;
 
             // send X enemies
             for (var i = 0; i < this.enemiesToSend; i++) {
-                this.enemies.push(new Enemy(this, this.enemiesHealth));
+                var e = new Enemy(this, this.enemiesHealth);
+                this.enemies.push(e);
             }
         }
 

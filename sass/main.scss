@@ -12,3 +12,40 @@ html, body {
   width:100%;
   height:100%;
 }
+
+.gui {
+  position:absolute;
+  width:100%;
+  height:150px;
+  bottom:0;
+  display:flex;
+  flex-flow: row;
+
+  .info {
+    width:30%;
+    display:flex;
+    flex-flow: column;
+
+    & > * {
+      width:90%;
+      margin:auto;
+      background-color: #0d3349;
+      color : white;
+    }
+    .fadeout {
+        animation : 0.5s next-level linear;
+    }
+  }
+}
+
+
+@keyframes next-level {
+  0% {
+    transform: scale(1);
+    opacity:1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity:0;
+  }
+}

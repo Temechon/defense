@@ -23,13 +23,30 @@
 
     <script src="js/modifiers/generators/DoubleShoot.js"></script>
 
+    <script src="js/GUIManager.js"></script>
+
     <!--Css-->
     <link rel='stylesheet' href='css/main.css'/>
 
 </head>
 <body>
 
+    <div class="gui">
+    
+        <div class="info">
+            <div class="level">Level <span id="level">1</span></div>
+            <div class="gold">999 golds</div>
+            <div class="timer">12:30</div>
+            <div class="speed">x2</div>
+            <div class="number">5 enemies</div>
+        </div>
+        <div class="effects"></div>
+        <div class="generators"></div>
+    </div>
+
     <canvas id="game-canvas"></canvas>
+
+
 
 </body>
 </html>

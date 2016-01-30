@@ -10,53 +10,75 @@ class Enemy extends GameObject {
         this.position.y = 1;
 
         this.getScene().registerBeforeRender(() => {
-
             // move
             this.move();
-
         });
 
         // enemy direction along x and Z axis
-        this.direction = new BABYLON.Vector3(0,0,0);
+        this.direction          = new BABYLON.Vector3(0,0,0);
 
-        this._mainDirection = new BABYLON.Vector3(0,0,0);
-        this._randomDirection = new BABYLON.Vector3(0,0,0);
+        // Helpers to choose a random direction
+        this._mainDirection     = new BABYLON.Vector3(0,0,0);
+        this._randomDirection   = new BABYLON.Vector3(0,0,0);
 
+        this.destination    = new BABYLON.Vector3(20,0,20);
 
-        this.destination = new BABYLON.Vector3(20,0,20);
+        // Enemy health
+        this.healthMax      = health;
+        this.health         = health;
+        this.healthBar      = this.createHealthBar();
 
-        this.health = health;
-
+        // Enemy speed
         this.speed = 1;
 
         // This parameter will be updated by modifiers in order to update the enemy speed.
         this.speedMultiplier = 1;
 
+        // Every X seconds, the enemy update its position
         this.timer = new Timer(Game.randomInt(250,500), this.getScene(), {autostart:true, repeat:-1});
         this.timer.callback = () => {
             this.changeDirection();
         }
     }
 
+    /**
+     * Called in render loop. Move this enemy
+     */
     move() {
         this.position.addInPlace(this.direction);
     }
 
     /**
-     * Removes value from
+     * Damage this enemy with the given value.
+     * If health is below 0, kill this enemy
      * @param value
      */
     damage(value) {
         this.health -= value;
+        // Compute health bar
+        this.healthBar.scaling.x = this.health / this.healthMax;
+        if (this.healthBar.scaling.x < 0.5) {
+            this.healthBar.material.diffuseColor = BABYLON.Color3.FromInts(255, 182, 0); // orange
+        }
+        if (this.healthBar.scaling.x < 0.25) {
+            this.healthBar.material.diffuseColor = BABYLON.Color3.Red();
+        }
+
         if (this.health <=0 ) {
             this.dispose();
         }
+
     }
 
+    /**
+     * Remove this enemy from the scene and from the game
+     */
     dispose() {
         this.timer.stop(true);
         // remove this enemy from the tower attack list
         this.game.removeEnemy(this);
+        // dispose the health bar
+        this.healthBar.dispose();
         super.dispose();
     }
 
@@ -77,5 +99,25 @@ class Enemy extends GameObject {
 
         this.direction.y = 0;
 
+    }
+
+    /**
+     * Create the health bar
+     */
+    createHealthBar() {
+        let plane = BABYLON.Mesh.CreatePlane('p', 2, this.getScene());
+        plane.lookAt(this.getScene().activeCamera.position);
+        plane.scaling.y = 0.1;
+
+        plane.position.z = 0.5;
+        plane.position.y = 1.5;
+
+        let mat = new BABYLON.StandardMaterial('', this.getScene());
+        mat.diffuseColor = BABYLON.Color3.Green();
+        mat.specularColor = BABYLON.Color3.Black();
+        plane.material = mat;
+
+        plane.parent = this;
+        return plane;
     }
 }
