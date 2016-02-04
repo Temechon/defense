@@ -46,6 +46,9 @@ var Enemy = (function (_GameObject) {
                 // Enemy speed
                 this.speed = 1;
 
+                // Gold given to the player when this enemy is down
+                this.gold = 20;
+
                 // This parameter will be updated by modifiers in order to update the enemy speed.
                 this.speedMultiplier = 1;
 
@@ -95,6 +98,7 @@ var Enemy = (function (_GameObject) {
         }, {
                 key: 'dispose',
                 value: function dispose() {
+                        // stop the timer and destroy it
                         this.timer.stop(true);
                         // remove this enemy from the tower attack list
                         this.game.removeEnemy(this);

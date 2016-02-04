@@ -11,6 +11,8 @@ var GUIManager = (function () {
         this.game = game;
 
         this.level = document.getElementById('level');
+        this.gold = document.getElementById('gold');
+        this.numberEnemies = document.getElementById('number');
     }
 
     _createClass(GUIManager, [{
@@ -23,6 +25,12 @@ var GUIManager = (function () {
                 _this.level.parentNode.classList.remove('fadeout');
             }, 500);
             this.level.innerHTML = this.game.level;
+        }
+    }, {
+        key: 'updateGui',
+        value: function updateGui() {
+            this.gold.innerHTML = this.game.gold;
+            this.numberEnemies.innerHTML = this.game.enemies.length;
         }
     }]);
 

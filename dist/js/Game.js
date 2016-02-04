@@ -31,9 +31,12 @@ var Game = (function () {
         this.enemiesToSend = 10;
         this.enemiesHealth = 10;
 
+        // The cost of the base tower. You need at least this amount of gold to build it
+        this.cost = 100;
+
         this.level = 0;
 
-        this.gold = 100;
+        this.gold = 300;
 
         // Resize window event
         window.addEventListener("resize", function () {
@@ -89,6 +92,7 @@ var Game = (function () {
 
                 // Load first level
                 _this2._initGame();
+                _this2.guiManager.updateGui();
             };
 
             loader.load();
@@ -126,9 +130,14 @@ var Game = (function () {
 
                     // if the picked mesh is the ground
                     var pos = pickInfo.pickedPoint;
-                    var t = new Tower(_this3);
-                    t.position = pos;
-                    _this3.towers.push(t);
+                    if (_this3.gold - _this3.cost >= 0) {
+                        _this3.gold -= _this3.cost;
+                        var t = new Tower(_this3);
+                        t.position = pos;
+                        _this3.towers.push(t);
+                    } else {
+                        // not enough money
+                    }
                 }
             });
 
@@ -194,6 +203,9 @@ var Game = (function () {
     }, {
         key: "removeEnemy",
         value: function removeEnemy(enemy) {
+            // Add gold to the player
+            this.gold += enemy.gold;
+
             // remove from tower
             var _iteratorNormalCompletion3 = true;
             var _didIteratorError3 = false;
@@ -229,6 +241,8 @@ var Game = (function () {
             if (this.enemies.length == 0) {
                 this.sendWave();
             }
+
+            this.guiManager.updateGui();
         }
 
         /**

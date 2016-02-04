@@ -22,12 +22,19 @@ var Tower = (function (_GameObject) {
 
         this.radius = 5;
 
-        var radiusSphere = BABYLON.Mesh.CreateSphere('radius', 16, this.radius * 2, this.getScene());
-        radiusSphere.material = new BABYLON.StandardMaterial('', this.getScene());
-        radiusSphere.material.alpha = 0.2;
-        radiusSphere.material.emissiveColor = BABYLON.Color3.Blue();
+        var mat = this.getScene().getMaterialByName('radiusDecal');
+        if (!mat) {
+            mat = new BABYLON.StandardMaterial('radiusDecal', this.getScene());
+            mat.emissiveTexture = new BABYLON.Texture('assets/radius.png', this.getScene());
+            mat.opacityTexture = mat.emissiveTexture;
+            mat.emissiveTexture.hasAlpha = true;
+            mat.zOffset = -1;
+        }
 
-        radiusSphere.parent = this;
+        var ground = this.getScene().getMeshByName('ground');
+        var radiusDecal = BABYLON.Mesh.CreateDecal("decal", ground, this.position, BABYLON.Vector3.Up(), new BABYLON.Vector3(10, 10, 10));
+        radiusDecal.material = mat;
+        radiusDecal.parent = this;
 
         this._attackList = [];
 
