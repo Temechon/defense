@@ -38,6 +38,9 @@ var Game = (function () {
 
         this.gold = 300;
 
+        // The tower that is currently selected
+        this.selectedTower = null;
+
         // Resize window event
         window.addEventListener("resize", function () {
             _this.engine.resize();
@@ -120,23 +123,32 @@ var Game = (function () {
             var eventPrefix = BABYLON.Tools.GetPointerPrefix();
             this.scene.getEngine().getRenderingCanvas().addEventListener(eventPrefix + "down", function () {
 
-                var pickInfo = _this3.scene.pick(_this3.scene.pointerX, _this3.scene.pointerY, function (mesh) {
-                    return mesh.name == 'ground';
-                });
+                var pickInfo = _this3.scene.pick(_this3.scene.pointerX, _this3.scene.pointerY);
 
                 if (pickInfo.hit) {
+
+                    // If a tower has been selected
+                    if (_this3.selectedTower) {
+                        _this3.selectedTower.unhighlight();
+                    }
+
                     // If the picked mesh is a tower
-                    // todo here, change its material
+                    if (pickInfo.pickedMesh.parent && BABYLON.Tags.HasTags(pickInfo.pickedMesh.parent, 'tower')) {
+                        _this3.selectedTower = pickInfo.pickedMesh.parent;
+                        _this3.selectedTower.highlight();
+                    }
 
                     // if the picked mesh is the ground
-                    var pos = pickInfo.pickedPoint;
-                    if (_this3.gold - _this3.cost >= 0) {
-                        _this3.gold -= _this3.cost;
-                        var t = new Tower(_this3);
-                        t.position = pos;
-                        _this3.towers.push(t);
-                    } else {
-                        // not enough money
+                    if (pickInfo.pickedMesh.name == 'ground') {
+                        var pos = pickInfo.pickedPoint;
+                        if (_this3.gold - _this3.cost >= 0) {
+                            _this3.gold -= _this3.cost;
+                            var t = new Tower(_this3);
+                            t.position = pos;
+                            _this3.towers.push(t);
+                        } else {
+                            // not enough money
+                        }
                     }
                 }
             });
@@ -268,6 +280,9 @@ var Game = (function () {
                 this.enemies.push(e);
             }
         }
+    }, {
+        key: "buyTower",
+        value: function buyTower() {}
 
         /**
          * Returns an integer in [min, max[

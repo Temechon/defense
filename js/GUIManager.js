@@ -7,6 +7,12 @@ class GUIManager {
         this.gold           = document.getElementById('gold');
         this.numberEnemies  = document.getElementById('number');
 
+        // The 'buy tower' icon
+        this.buy            = document.getElementById('buy');
+        this.addAction(this.buy, () => {
+            this.game.buyTower();
+        });
+
     }
 
     nextLevel() {
@@ -22,5 +28,8 @@ class GUIManager {
         this.numberEnemies.innerHTML = this.game.enemies.length;
     }
 
-
+    addAction(element, callback) {
+        let eventPrefix = BABYLON.Tools.GetPointerPrefix();
+        element.addEventListener(eventPrefix + "down", callback);
+    }
 }

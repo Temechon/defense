@@ -33,7 +33,7 @@ html, body {
       -ms-flex-flow: row;
           flex-flow: row; }
   .gui .info {
-    width: 30%;
+    width: 25%;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
@@ -48,6 +48,17 @@ html, body {
     .gui .info .fadeout {
       -webkit-animation: 0.5s next-level linear;
               animation: 0.5s next-level linear; }
+  .gui .buy {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
+    width: 15%; }
 
 @-webkit-keyframes next-level {
   0% {

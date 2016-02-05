@@ -6,6 +6,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var GUIManager = (function () {
     function GUIManager(game) {
+        var _this = this;
+
         _classCallCheck(this, GUIManager);
 
         this.game = game;
@@ -13,16 +15,22 @@ var GUIManager = (function () {
         this.level = document.getElementById('level');
         this.gold = document.getElementById('gold');
         this.numberEnemies = document.getElementById('number');
+
+        // The 'buy tower' icon
+        this.buy = document.getElementById('buy');
+        this.addAction(this.buy, function () {
+            _this.game.buyTower();
+        });
     }
 
     _createClass(GUIManager, [{
         key: 'nextLevel',
         value: function nextLevel() {
-            var _this = this;
+            var _this2 = this;
 
             this.level.parentNode.classList.add('fadeout');
             setTimeout(function () {
-                _this.level.parentNode.classList.remove('fadeout');
+                _this2.level.parentNode.classList.remove('fadeout');
             }, 500);
             this.level.innerHTML = this.game.level;
         }
@@ -31,6 +39,12 @@ var GUIManager = (function () {
         value: function updateGui() {
             this.gold.innerHTML = this.game.gold;
             this.numberEnemies.innerHTML = this.game.enemies.length;
+        }
+    }, {
+        key: 'addAction',
+        value: function addAction(element, callback) {
+            var eventPrefix = BABYLON.Tools.GetPointerPrefix();
+            element.addEventListener(eventPrefix + "down", callback);
         }
     }]);
 

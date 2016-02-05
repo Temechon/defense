@@ -22,7 +22,7 @@ html, body {
   flex-flow: row;
 
   .info {
-    width:30%;
+    width:25%;
     display:flex;
     flex-flow: column;
 
@@ -35,6 +35,13 @@ html, body {
     .fadeout {
         animation : 0.5s next-level linear;
     }
+  }
+
+  .buy {
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    width:15%;
   }
 }
 

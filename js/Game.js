@@ -30,6 +30,9 @@ class Game {
 
         this.gold = 300;
 
+        // The tower that is currently selected
+        this.selectedTower = null;
+
         // Resize window event
         window.addEventListener("resize", () => {
             this.engine.resize();
@@ -110,23 +113,34 @@ class Game {
 
             let pickInfo = this.scene.pick(
                 this.scene.pointerX,
-                this.scene.pointerY,
-                (mesh) => { return mesh.name == 'ground'});
+                this.scene.pointerY);
 
 
             if (pickInfo.hit) {
+
+                // If a tower has been selected
+                if (this.selectedTower) {
+                    this.selectedTower.unhighlight();
+                }
+
                 // If the picked mesh is a tower
-                // todo here, change its material
+                if (pickInfo.pickedMesh.parent &&
+                    BABYLON.Tags.HasTags(pickInfo.pickedMesh.parent, 'tower')) {
+                    this.selectedTower = pickInfo.pickedMesh.parent;
+                    this.selectedTower.highlight();
+                }
 
                 // if the picked mesh is the ground
-                let pos = pickInfo.pickedPoint;
-                if (this.gold - this.cost >= 0) {
-                    this.gold -= this.cost;
-                    let t = new Tower(this);
-                    t.position = pos;
-                    this.towers.push(t);
-                } else {
-                    // not enough money
+                if (pickInfo.pickedMesh.name == 'ground') {
+                    let pos = pickInfo.pickedPoint;
+                    if (this.gold - this.cost >= 0) {
+                        this.gold -= this.cost;
+                        let t = new Tower(this);
+                        t.position = pos;
+                        this.towers.push(t);
+                    } else {
+                        // not enough money
+                    }
                 }
             }
         });
@@ -193,6 +207,10 @@ class Game {
             let e = new Enemy(this, this.enemiesHealth);
             this.enemies.push(e);
         }
+
+    }
+
+    buyTower() {
 
     }
 

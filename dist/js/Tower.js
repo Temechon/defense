@@ -31,10 +31,12 @@ var Tower = (function (_GameObject) {
             mat.zOffset = -1;
         }
 
+        // Create radius decal
         var ground = this.getScene().getMeshByName('ground');
-        var radiusDecal = BABYLON.Mesh.CreateDecal("decal", ground, this.position, BABYLON.Vector3.Up(), new BABYLON.Vector3(10, 10, 10));
-        radiusDecal.material = mat;
-        radiusDecal.parent = this;
+        this.radiusDecal = BABYLON.Mesh.CreateDecal("decal", ground, this.position, BABYLON.Vector3.Up(), new BABYLON.Vector3(10, 10, 10));
+        this.radiusDecal.material = mat;
+        this.radiusDecal.parent = this;
+        this.radiusDecal.isVisible = false;
 
         this._attackList = [];
 
@@ -50,6 +52,9 @@ var Tower = (function (_GameObject) {
         this.modifier = new StandardEffect(this.getScene());
 
         this.generator = new DoubleShoot(this.game, this.shootCadency);
+
+        // set tags as tower
+        BABYLON.Tags.AddTagsTo(this, 'tower');
     }
 
     _createClass(Tower, [{
@@ -87,6 +92,20 @@ var Tower = (function (_GameObject) {
                 pos.y = 1;
                 this.generator.generate(pos, enemyPos, this.radius, 10, this.modifier);
             }
+        }
+
+        // Called when this tower is clicked
+    }, {
+        key: 'highlight',
+        value: function highlight() {
+            this.radiusDecal.isVisible = true;
+        }
+
+        // Called when this tower is not clicked anymore
+    }, {
+        key: 'unhighlight',
+        value: function unhighlight() {
+            this.radiusDecal.isVisible = false;
         }
     }]);
 
